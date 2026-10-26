@@ -1,0 +1,996 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Spec-Driven ADK Agent Development with Antigravity and Spec-kit | Google Codelabs</title>
+  <link rel="icon" type="image/png" href="https://www.gstatic.com/devrel-devsite/prod/v4672e09ff336ee3bbcf1f2a3ff4c85675e2f79fb6bb9c35ae98dff0bc8eb4800/developers/images/favicon.png">
+  
+  <!-- Google Fonts & Material Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&family=Roboto:wght@300;400;500;700&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- Fixed Top Header -->
+  <header class="devsite-header">
+    <div class="header-left">
+      <a href="#" class="codelab-logo" aria-label="Google Codelabs">
+        <svg viewBox="0 0 40 40" width="28" height="28">
+          <circle cx="20" cy="20" r="18" fill="#1a73e8"/>
+          <path fill="#ffffff" d="M12 20a8 8 0 0 1 13.6-5.7l2.1-2.1A11 11 0 1 0 31 20h-3a8 8 0 0 1-8 8 8 8 0 0 1-8-8z"/>
+          <circle cx="20" cy="20" r="4" fill="#fbbc04"/>
+        </svg>
+        <span class="codelab-logo-text">Google Codelabs</span>
+      </a>
+      <span class="header-divider"></span>
+      <span class="header-title">Spec-Driven ADK Agent Development with Antigravity and Spec-kit</span>
+    </div>
+    
+    <div class="progress-bar-container">
+      <div class="progress-bar-fill" id="progress-bar-fill"></div>
+    </div>
+  </header>
+
+  <!-- Main Codelab Layout -->
+  <div class="codelab-container">
+    <!-- Left Navigation Drawer -->
+    <nav class="devsite-book-nav" id="drawer" aria-label="Codelab Table of Contents">
+      <div class="drawer-header">
+        <div class="filter-box">
+          <span class="material-icons">filter_list</span>
+          <input type="text" id="step-filter" placeholder="Filter steps..." aria-label="Filter steps">
+        </div>
+      </div>
+      
+      <ul class="step-list" id="step-list">
+      <li class="step-item active" data-step="0">
+        <span class="step-number">1</span>
+        <span class="step-label">Introduction</span>
+      </li>
+      <li class="step-item" data-step="1">
+        <span class="step-number">2</span>
+        <span class="step-label">Set Up Your Environment</span>
+      </li>
+      <li class="step-item" data-step="2">
+        <span class="step-number">3</span>
+        <span class="step-label">Explore the Starter Code and Understand Spec-Driven Development</span>
+      </li>
+      <li class="step-item" data-step="3">
+        <span class="step-number">4</span>
+        <span class="step-label">Bootstrap Project Context with Antigravity</span>
+      </li>
+      <li class="step-item" data-step="4">
+        <span class="step-number">5</span>
+        <span class="step-label">SDD Cycle — Add Reservation Feature</span>
+      </li>
+      <li class="step-item" data-step="5">
+        <span class="step-number">6</span>
+        <span class="step-label">Implement</span>
+      </li>
+      <li class="step-item" data-step="6">
+        <span class="step-number">7</span>
+        <span class="step-label">Challenges (Optional)</span>
+      </li>
+      <li class="step-item" data-step="7">
+        <span class="step-number">8</span>
+        <span class="step-label">Congratulations!</span>
+      </li>
+      </ul>
+    </nav>
+    
+    <!-- Backdrop for Mobile Navigation -->
+    <div class="drawer-backdrop" id="drawer-backdrop"></div>
+
+    <!-- Step Content Area -->
+    <main class="codelab-content" id="main-content">
+    <div class="codelab-step active" id="step-0" data-step="0">
+      <h2 class="step-title">1. Introduction</h2>
+      <aside class="special">
+  <div class="aside-header"><span class="material-icons">info</span><strong>Note:</strong></div>
+  <p>This lab is based on <a href="https://codelabs.developers.google.com/sdd-adk-antigravity" target="_blank" rel="noopener">Spec-Driven ADK Agent Development with Antigravity and Spec-kit</a>.</p>
+</aside>
+<p>Adding features to an existing agent — a new database-backed capability — typically means writing boilerplate, wiring up integrations, and keeping everything consistent with the patterns already in the codebase. Antigravity accelerates every stage of this process: it analyzes your codebase to build the context it needs, produces structured specifications and implementation plans for your review, and executes the code changes — all guided by domain knowledge it helps you capture as reusable skills and a project constitution that enforces non-negotiable principles. This codelab introduce a way to supercharge Antigravity Spec-driven Development paradigm by introducing a new cycle to boost specification documentation heavily referencing  <a href="https://github.com/github/spec-kit" target="_blank" rel="noopener">spec-kit</a></p>
+<h3>What you'll build</h3>
+<p>A locally running restaurant concierge application with reservation booking added through a complete SDD cycle:</p>
+<ul class="devsite-list">
+  <li><strong>Reservation booking</strong> — guests book tables and check reservations, backed by new MCP Toolbox database tools and a Cloud SQL <code translate="no" dir="ltr">reservations</code> table</li>
+  <li><strong>(Challenge) –</strong> develop your own UI for the agent</li>
+  <li><strong>(Challenge) –</strong> deploy to Google Cloud with the help of the Antigravity agent</li>
+</ul>
+<p>The starter code provides a working ADK agent with menu search (keyword + semantic via MCP Toolbox) and dietary preference tracking (via ToolContext). You extend it without writing application code by hand — Antigravity handles the implementation based on your specifications.</p>
+<div class="image-container"><img src="images/404869b603fff6ab.png" alt="404869b603fff6ab.png" class="devsite-screenshot" loading="lazy"></div>
+<h3>What you'll learn</h3>
+<ul class="devsite-list">
+  <li>How to bootstrap project context so Antigravity understands an existing codebase</li>
+  <li>How to create Antigravity skills and configure MCP that package domain knowledge (e.g., ADK docs, 3rd party skills) for reuse</li>
+  <li>How to set a project constitution that the SDD workflows validate against during planning and analysis</li>
+  <li>How to use Spec-Driven Development (SDD) workflows in Antigravity to systematically add features</li>
+  <li>How to extend an ADK agent with new database-backed tools via MCP Toolbox</li>
+</ul>
+<h3>Prerequisites</h3>
+<ul class="devsite-list">
+  <li><a href="https://antigravity.google" target="_blank" rel="noopener">Google Antigravity</a> and <code translate="no" dir="ltr">git</code> installed on your local machine</li>
+  <li>A Google Cloud account with a active billing account enabled</li>
+  <li>Previous completion of the four prerequisite ADK codelabs (or equivalent knowledge) will be helpful to understand use case context:</li>
+  <li><a href="https://codelabs.developers.google.com/devsite/codelabs/build-agents-with-adk-foundation" target="_blank" rel="noopener">Building AI Agents with ADK: The Foundation</a></li>
+  <li><a href="https://codelabs.developers.google.com/devsite/codelabs/build-agents-with-adk-empowering-with-tools" target="_blank" rel="noopener">Building AI Agents with ADK: Empowering with Tools</a></li>
+  <li><a href="https://codelabs.developers.google.com/persistent-adk-cloudsql" target="_blank" rel="noopener">Building Persistent AI Agents with ADK and CloudSQL</a></li>
+  <li><a href="https://codelabs.developers.google.com/deploy-manage-observe-adk-cloud-run" target="_blank" rel="noopener">Deploy, Manage, and Observe ADK Agent on Cloud Run</a></li>
+  <li><a href="https://codelabs.developers.google.com/agentic-rag-toolbox-cloudsql" target="_blank" rel="noopener">Database as a Tool: Agentic RAG with ADK, MCP Toolbox, and Cloud SQL</a></li>
+</ul>
+<hr>
+    </div>
+
+    <div class="codelab-step" id="step-1" data-step="1">
+      <h2 class="step-title">2. Set Up Your Environment</h2>
+      <aside class="special">
+  <div class="aside-header"><span class="material-icons">info</span><strong>Note:</strong></div>
+  <p><strong>IMPORTANT NOTES:</strong>
+This tutorial requires a Google Cloud Project with an <strong>active billing account</strong>. If you do not have one yet, use the banner at the top of this codelab to get a <strong>trial billing account</strong> that can be used for this tutorial.</p>
+</aside>
+<p>This step clones the starter repository, authenticates with Google Cloud, provisions a Cloud SQL database, and prepares your local Antigravity environment.</p>
+<aside class="special">
+  <div class="aside-header"><span class="material-icons">info</span><strong>Note:</strong></div>
+  <p><strong>Notes:</strong> This codelab runs entirely in Google Antigravity on your local machine. Setup includes manual authentication using <code translate="no" dir="ltr">gcloud</code> CLI command</p>
+</aside>
+<h3>Install prerequisites</h3>
+<p>Ensure your system has the following CLI executable:</p>
+<ul class="devsite-list">
+  <li><a href="https://git-scm.com/install/" target="_blank" rel="noopener"><code translate="no" dir="ltr">git</code></a></li>
+  <li><a href="https://docs.cloud.google.com/sdk/docs/install-sdk#latest-version" target="_blank" rel="noopener"><code translate="no" dir="ltr">gcloud</code></a></li>
+  <li><a href="https://docs.astral.sh/uv/getting-started/installation/" target="_blank" rel="noopener"><code translate="no" dir="ltr">uv</code></a></li>
+  <li><a href="https://docs.npmjs.com/downloading-and-installing-node-js-and-npm" target="_blank" rel="noopener"><code translate="no" dir="ltr">npm</code></a></li>
+</ul>
+<p>The installation instruction is different based on the Operating System of your machine.</p>
+<h3>Clone the starter repository</h3>
+<p>Open a terminal in Antigravity (or your system terminal). Clone the companion repo and enter the directory:</p>
+<devsite-code>
+  <div class="code-header">
+    <span class="code-lang">bash</span>
+    <button class="copy-button" onclick="copyCode(this)" aria-label="Copy code">
+      <span class="material-icons">content_copy</span>
+      <span class="copy-text">Copy</span>
+    </button>
+  </div>
+  <pre class="devsite-click-to-copy" syntax="bash"><code class="language-bash">git clone https://github.com/alphinside/sdd-adk-antigravity-starter.git sdd-adk-agents-agy
+cd sdd-adk-agents-agy</code></pre>
+</devsite-code>
+<p>Open the cloned repository in Antigravity. <strong>File</strong>-&gt;<strong>Open Folder</strong>-&gt;select the cloned directory <strong>sdd-adk-agents-agy</strong></p>
+<p>Remove the upstream remote. The SDD workflows create git branches for feature specifications — removing the remote prevents accidentally pushing to the starter repository:</p>
+<devsite-code>
+  <div class="code-header">
+    <span class="code-lang">bash</span>
+    <button class="copy-button" onclick="copyCode(this)" aria-label="Copy code">
+      <span class="material-icons">content_copy</span>
+      <span class="copy-text">Copy</span>
+    </button>
+  </div>
+  <pre class="devsite-click-to-copy" syntax="bash"><code class="language-bash">git remote remove origin</code></pre>
+</devsite-code>
+<aside class="warning">
+  <div class="aside-header"><span class="material-icons">warning</span><strong>Warning:</strong></div>
+  <p><strong>Important:</strong> The SDD workflows in this codelab use <code translate="no" dir="ltr">git</code> branches to organize feature specifications. Removing the <code translate="no" dir="ltr">origin</code> remote ensures your local branches and commits stay local. If you want to back up your work, add your own remote: <code translate="no" dir="ltr">git remote add origin &lt;your-repo-url&gt;</code></p>
+</aside>
+<h3>Authenticate with Google Cloud</h3>
+<p>Run two authentication commands. Both open a browser for OAuth:</p>
+<devsite-code>
+  <div class="code-header">
+    <span class="code-lang">bash</span>
+    <button class="copy-button" onclick="copyCode(this)" aria-label="Copy code">
+      <span class="material-icons">content_copy</span>
+      <span class="copy-text">Copy</span>
+    </button>
+  </div>
+  <pre class="devsite-click-to-copy" syntax="bash"><code class="language-bash">gcloud auth login
+gcloud auth application-default login</code></pre>
+</devsite-code>
+<aside class="special">
+  <div class="aside-header"><span class="material-icons">info</span><strong>Note:</strong></div>
+  <p><strong>Notes:</strong> On the second OAuth command, when prompted to select permission. Check all options</p>
+</aside>
+<aside class="special">
+  <div class="aside-header"><span class="material-icons">info</span><strong>Note:</strong></div>
+  <p><strong>Notes:</strong> Ensure you authenticate with the email you use to claim the trial billing account</p>
+</aside>
+<p>Since you are working locally with Antigravity, you authenticate manually. <code translate="no" dir="ltr">auth login</code> authenticates the <code translate="no" dir="ltr">gcloud</code> CLI. <code translate="no" dir="ltr">application-default login</code> authenticates Google Cloud SDKs that your application uses — ADK&#39;s Vertex AI calls and the Cloud SQL Python connector both rely on Application Default Credentials.</p>
+<h3>Set up your Google Cloud project</h3>
+<p>Write the location variables to <code translate="no" dir="ltr">.env</code> before running the project setup script:</p>
+<devsite-code>
+  <div class="code-header">
+    <span class="code-lang">bash</span>
+    <button class="copy-button" onclick="copyCode(this)" aria-label="Copy code">
+      <span class="material-icons">content_copy</span>
+      <span class="copy-text">Copy</span>
+    </button>
+  </div>
+  <pre class="devsite-click-to-copy" syntax="bash"><code class="language-bash">echo &quot;GOOGLE_CLOUD_LOCATION=global&quot; &gt; .env
+echo &quot;REGION=us-central1&quot; &gt;&gt; .env</code></pre>
+</devsite-code>
+<ul class="devsite-list">
+  <li><code translate="no" dir="ltr">GOOGLE&lt;em&gt;CLOUD&lt;/em&gt;LOCATION=global</code> is used for Vertex AI / Gemini API calls.</li>
+  <li><code translate="no" dir="ltr">REGION=us-central1</code> is used for Cloud SQL and other GCP infrastructure</li>
+</ul>
+<aside class="warning">
+  <div class="aside-header"><span class="material-icons">warning</span><strong>Warning:</strong></div>
+  <p><strong>IMPORTANT!</strong> The step below is provided to help quickly setup the Google Cloud project which linked to a Trial Billing account (strict), if you prefer to use your own previous project, you can skip the following step and do the following step instead:
+Add your own project name as <strong>GOOGLE<em>CLOUD</em>PROJECT</strong> variable in the <strong>.env</strong> file
+Activate your project in the terminal using <strong>gcloud config set project your-project-id</strong>
+Then, you can directly skip to the Enabling API
+<strong>If you are not sure about this, continue the section below</strong></p>
+</aside>
+<p>Download and run the project setup script. It creates or validates a Google Cloud project with trial billing and saves the project ID to <code translate="no" dir="ltr">.env</code> then source it:</p>
+<devsite-code>
+  <div class="code-header">
+    <span class="code-lang">bash</span>
+    <button class="copy-button" onclick="copyCode(this)" aria-label="Copy code">
+      <span class="material-icons">content_copy</span>
+      <span class="copy-text">Copy</span>
+    </button>
+  </div>
+  <pre class="devsite-click-to-copy" syntax="bash"><code class="language-bash">curl -sL https://raw.githubusercontent.com/alphinside/cloud-trial-project-setup/main/setup_verify_trial_project.sh -o setup_verify_trial_project.sh
+
+bash setup_verify_trial_project.sh &amp;&amp; source .env</code></pre>
+</devsite-code>
+<h3>Enabling API</h3>
+<p>Enable the required APIs:</p>
+<devsite-code>
+  <div class="code-header">
+    <span class="code-lang">bash</span>
+    <button class="copy-button" onclick="copyCode(this)" aria-label="Copy code">
+      <span class="material-icons">content_copy</span>
+      <span class="copy-text">Copy</span>
+    </button>
+  </div>
+  <pre class="devsite-click-to-copy" syntax="bash"><code class="language-bash">gcloud services enable \
+  aiplatform.googleapis.com \
+  sqladmin.googleapis.com \
+  compute.googleapis.com \
+  cloudresourcemanager.googleapis.com</code></pre>
+</devsite-code>
+<aside class="special">
+  <div class="aside-header"><span class="material-icons">info</span><strong>Note:</strong></div>
+  <p><strong>Notes:</strong> Enabling APIs may take a moment. You only need to do this once per project.</p>
+</aside>
+<h3>Install dependencies</h3>
+<p>We will utilize <code translate="no" dir="ltr">uv</code> as the Python project manager. <code translate="no" dir="ltr">uv</code> is a fast Python package and project manager written in Rust (  <a href="https://docs.astral.sh/uv/" target="_blank" rel="noopener">docs</a> ). This codelab uses it for speed and simplicity. Install the Python dependencies:</p>
+<devsite-code>
+  <div class="code-header">
+    <span class="code-lang">bash</span>
+    <button class="copy-button" onclick="copyCode(this)" aria-label="Copy code">
+      <span class="material-icons">content_copy</span>
+      <span class="copy-text">Copy</span>
+    </button>
+  </div>
+  <pre class="devsite-click-to-copy" syntax="bash"><code class="language-bash">uv sync</code></pre>
+</devsite-code>
+<p>Then update the ADK agent&#39;s <code translate="no" dir="ltr">.env</code> file with your project configuration:</p>
+<devsite-code>
+  <div class="code-header">
+    <span class="code-lang">bash</span>
+    <button class="copy-button" onclick="copyCode(this)" aria-label="Copy code">
+      <span class="material-icons">content_copy</span>
+      <span class="copy-text">Copy</span>
+    </button>
+  </div>
+  <pre class="devsite-click-to-copy" syntax="bash"><code class="language-bash">cat &gt; restaurant_concierge/.env &lt;&lt;EOF
+GOOGLE_CLOUD_PROJECT=${GOOGLE_CLOUD_PROJECT}
+GOOGLE_CLOUD_LOCATION=global
+GOOGLE_GENAI_USE_VERTEXAI=True
+EOF</code></pre>
+</devsite-code>
+<h3>Prepare Database Infrastructure and Data</h3>
+<p>Set the database password and add it to <code translate="no" dir="ltr">.env</code>:</p>
+<devsite-code>
+  <div class="code-header">
+    <span class="code-lang">bash</span>
+    <button class="copy-button" onclick="copyCode(this)" aria-label="Copy code">
+      <span class="material-icons">content_copy</span>
+      <span class="copy-text">Copy</span>
+    </button>
+  </div>
+  <pre class="devsite-click-to-copy" syntax="bash"><code class="language-bash">export DB_PASSWORD=codelabpassword
+echo &quot;DB_PASSWORD=${DB_PASSWORD}&quot; &gt;&gt; .env</code></pre>
+</devsite-code>
+<aside class="warning">
+  <div class="aside-header"><span class="material-icons">warning</span><strong>Warning:</strong></div>
+  <p><strong>Important:</strong> The hardcoded password above is for tutorial purposes only. In a production environment, store credentials securely using a service like  <a href="https://cloud.google.com/secret-manager/docs/overview" target="_blank" rel="noopener">Secret Manager</a> and reference them at runtime — never commit plaintext secrets to source control.</p>
+</aside>
+<p>Then, run the <code translate="no" dir="ltr">scripts/setup_database.sh</code> script to prepare all the infrastructure needed. It will do the following:</p>
+<ul class="devsite-list">
+  <li>Create Cloud SQL instance</li>
+  <li>Check whether the instance is ready</li>
+  <li>Grant Vertex AI permissions</li>
+  <li>Create database</li>
+  <li>Seed database</li>
+  <li>Run the MCP Toolbox service in background</li>
+</ul>
+<devsite-code>
+  <div class="code-header">
+    <span class="code-lang">bash</span>
+    <button class="copy-button" onclick="copyCode(this)" aria-label="Copy code">
+      <span class="material-icons">content_copy</span>
+      <span class="copy-text">Copy</span>
+    </button>
+  </div>
+  <pre class="devsite-click-to-copy" syntax="bash"><code class="language-bash">chmod +x scripts/setup_database.sh
+./scripts/setup_database.sh &gt; database_setup.log 2&gt;&amp;1 &amp;</code></pre>
+</devsite-code>
+<p>This command will run the setup in background, you can periodically check the output at <code translate="no" dir="ltr">database_setup.log</code> file</p>
+<p>Now, we should have all of our required starter ADK agent repo to work on. Now let&#39;s talk more about Antigravity and Spec-driven development in the next section while waiting for everything ready</p>
+<hr>
+    </div>
+
+    <div class="codelab-step" id="step-2" data-step="2">
+      <h2 class="step-title">3. Explore the Starter Code and Understand Spec-Driven Development</h2>
+      <p>This step walks through the starter code structure, introduces the Spec-Driven Development methodology, seeds the database, and verifies the base agent works before you start extending it.</p>
+<h3>Project structure</h3>
+<p>Open the cloned repo project in the Antigravity editor and review the directory layout:</p>
+<devsite-code>
+  <div class="code-header">
+    <span class="code-lang">text</span>
+    <button class="copy-button" onclick="copyCode(this)" aria-label="Copy code">
+      <span class="material-icons">content_copy</span>
+      <span class="copy-text">Copy</span>
+    </button>
+  </div>
+  <pre class="devsite-click-to-copy" syntax="text"><code class="language-text">sdd-adk-agents-agy/
+├── .agents/
+│   ├── workflows/                 # SDD slash commands (/speckit.*) – manual trigger
+│   │   ├── speckit.specify.md
+│   │   ├── speckit.clarify.md
+│   │   ├── speckit.plan.md
+│   │   ├── speckit.tasks.md
+│   │   ├── speckit.analyze.md
+│   │   ├── speckit.implement.md
+│   │   ├── speckit.checklist.md
+│   │   └── speckit.constitution.md
+│   ├── skills/                   # Antigravity skills (loaded on demand, agent determined)
+│   │   ├── mcp-toolbox-postgres/
+│   │   │   └── SKILL.md     # MCP Toolbox config skill
+│   │   └── repo-research/
+│   │       └── SKILL.md     # Repo analysis skill
+│   └── rules/               # Always-active context
+├── .specify/                # spec-kit SDD templates and memory
+│   ├── memory/constitution.md
+│   ├── templates/
+│   └── scripts/
+├── restaurant_concierge/    # ADK agent package
+│   ├── __init__.py
+│   ├── agent.py             # LlmAgent + ToolContext tools + Toolbox integration
+│   └── .env                 # Vertex AI configuration
+├── server.py                # FastAPI server wrapping the agent
+├── tools.yaml               # MCP Toolbox tool definitions
+├── scripts/                 # Setup scripts
+└── pyproject.toml</code></pre>
+</devsite-code>
+<h3>Key files</h3>
+<h4>Agent Application Files</h4>
+<ul class="devsite-list">
+  <li><strong><code translate="no" dir="ltr">restaurant&lt;em&gt;concierge/agent.py</code></strong> — The core agent. An <code translate="no" dir="ltr">LlmAgent</code> that combines MCP Toolbox database tools with <code translate="no" dir="ltr">ToolContext</code>-based dietary preference tracking. The agent loads all tools from the Toolbox server and adds two Python functions (<code translate="no" dir="ltr">save&lt;/em&gt;dietary&lt;em&gt;preference</code>, <code translate="no" dir="ltr">get&lt;/em&gt;dietary_preferences</code>) that use <code translate="no" dir="ltr">ToolContext</code> to manage state.</li>
+  <li><strong><code translate="no" dir="ltr">tools.yaml</code></strong> — MCP Toolbox tool definitions. Three menu search tools are defined: keyword search (<code translate="no" dir="ltr">search&lt;em&gt;menu</code>), semantic search via <code translate="no" dir="ltr">pgvector</code> (<code translate="no" dir="ltr">semantic&lt;/em&gt;search&lt;em&gt;menu</code>), and category filter (<code translate="no" dir="ltr">get&lt;/em&gt;menu&lt;em&gt;by&lt;/em&gt;category</code>). No reservation tools exist yet — you add those later on</li>
+  <li><strong><code translate="no" dir="ltr">server.py</code></strong> — A minimal FastAPI server, showcasing how you can access ADK as FastAPI object. <code translate="no" dir="ltr">get&lt;em&gt;fast&lt;/em&gt;api&lt;em&gt;app()</code> from ADK provides built-in endpoints including <code translate="no" dir="ltr">/run&lt;/em&gt;sse</code> for SSE streaming and session management APIs.</li>
+</ul>
+<h4>Antigravity Files</h4>
+<ul class="devsite-list">
+  <li><strong><code translate="no" dir="ltr">.agents/skills/mcp-toolbox-postgres/SKILL.md</code></strong> — A skill that guide Antigravity on how to create proper tools.yaml configuration for MCP toolbox. This skill will teach configuration related to <code translate="no" dir="ltr">sources</code>, <code translate="no" dir="ltr">tools</code> , and <code translate="no" dir="ltr">embeddingModels</code> config required to build proper RAG pipeline. This skill won't be activated until you add proper YAML frontmatter to be recognized by Antigravity</li>
+  <li><strong><code translate="no" dir="ltr">.agents/skills/repo-research/SKILL.md</code></strong> — A skill that teaches Antigravity how to analyze a repository incrementally and produce a structured project context document. It uses a 4-phase approach: surface scan (directory tree only), config and metadata files, entry points and data models, then targeted deep dives — each phase stops and writes findings before proceeding to the next. It is also inactive until you add YAML frontmatter later. Once activated, invoke it to generate <code translate="no" dir="ltr">.agents/rules/project-context.md</code> — a comprehensive onboarding document covering architecture, runtime dependencies, API surface, and domain glossary.</li>
+</ul>
+<h3>Spec-Driven Development: from Antigravity's built-in planning to structured SDD</h3>
+<p>AI coding assistants make it easy to generate code from a prompt. The risk: you describe a feature in a sentence, the assistant writes hundreds of lines, and you accept it because it looks right. This is sometimes called &#34;vibe coding&#34; — you steer by feel, accepting or rejecting output based on whether it seems to work. It is fast for prototypes and throwaway scripts. It breaks down when the codebase grows, when features interact, or when you revisit code weeks later and cannot reconstruct why a decision was made.</p>
+<div class="image-container"><img src="images/b2a0753229d08ef3.png" alt="b2a0753229d08ef3.png" class="devsite-screenshot" loading="lazy"></div>
+<p>Spec-Driven Development (SDD) adds structure to this loop. Before any code is generated, you write a specification: what the feature does, who it serves, what the success criteria are. The AI assistant works from that spec — and so do you when reviewing its output. The spec becomes the single source of truth for intent. If the code diverges from the spec, you catch it in review. If requirements change, you update the spec first, then regenerate. Decisions are documented, not improvised.</p>
+<p>The tradeoff is real: SDD is slower per feature than vibe coding. You write documents before writing code. But the payoff compounds — every future change to the codebase has context, every AI-generated implementation has a reviewable contract, and you can onboard collaborators (human or AI) by pointing them at specs instead of explaining decisions from memory.</p>
+<p>Antigravity already follows spec-driven development principles. When you set the agent to <strong>Planning mode</strong>, it produces two artifacts before writing any code:</p>
+<ul class="devsite-list">
+  <li><strong>Implementation Plan</strong> — an overview of the proposed technical approach, file changes, and architecture decisions</li>
+</ul>
+<div class="image-container"><img src="images/632169a236bc62cc.png" alt="632169a236bc62cc.png" class="devsite-screenshot" loading="lazy"></div>
+<ul class="devsite-list">
+  <li><strong>Task List</strong> — a structured breakdown of work items</li>
+</ul>
+<div class="image-container"><img src="images/795e47f4d98ae074.png" alt="795e47f4d98ae074.png" class="devsite-screenshot" loading="lazy"></div>
+<p>Antigravity asks you to review and approve these artifacts before execution. This plan-then-implement loop is the core of spec-driven development: specifications guide the code, not the other way around.</p>
+<p>This codelab takes that foundation further with an <strong><em>opinionated</strong></em>, version-controlled workflow based on  <a href="https://github.com/github/spec-kit" target="_blank" rel="noopener"><strong>spec-kit</strong></a> — a specification-driven development framework from GitHub. Every feature goes through a deliberate pipeline where each artifact is a standalone document you can review, edit, and track in <code translate="no" dir="ltr">git</code>. The pipeline includes two optional quality-gate phases (clarify and analyze) that catch issues before they become implementation problems:</p>
+<div class="table-container"><table class="devsite-table"><thead><tr><th>Phase</th><th>Artifact</th><th>Purpose</th></tr></thead><tbody><tr><td>/speckit.specify</td></tr></tbody></table></div>
+<p>spec.md | Define WHAT to build (user-facing, technology-agnostic) | | /speckit.clarify (optional) | Updated spec.md | Identify underspecified areas, ask targeted clarification questions, encode answers back into the spec | | /speckit.plan | plan.md, data-model.md, research.md | Design HOW to build it (technical approach, data models, research) | | /speckit.tasks | tasks.md | Break the plan into ordered, actionable steps | | /speckit.analyze (optional) | Analysis report | Review tasks for risks, gaps, or missing edge cases before implementation | | /speckit.implement | Code changes | Execute the tasks, checking off each one |</p>
+<div class="image-container"><img src="images/c0164b540ee0afa1.png" alt="c0164b540ee0afa1.png" class="devsite-screenshot" loading="lazy"></div>
+<p>Every artifact is persisted as a file in <code translate="no" dir="ltr">specs/&lt;feature-branch&gt;/</code>, version-controlled in git, and reusable. If a conversation is interrupted or you want to revisit decisions later, the specification documents are always there — not buried in a chat history.</p>
+<aside class="special">
+  <div class="aside-header"><span class="material-icons">info</span><strong>Note:</strong></div>
+  <p><strong>Notes:</strong> Antigravity built-in artifact has superiority in the UI which enables user comment on the generated artifact ( even image! ). Hence in this tutorial we modify the original <code translate="no" dir="ltr">spec-kit</code> prompt to integrate with built-in artifact in <code translate="no" dir="ltr">implement</code> phases</p>
+</aside>
+<p>The starter repo includes these SDD workflows in <code translate="no" dir="ltr">.agents/workflows/</code> and templates in <code translate="no" dir="ltr">.specify/templates/</code>. You will use them later on to add features to the agent.</p>
+<hr>
+    </div>
+
+    <div class="codelab-step" id="step-3" data-step="3">
+      <h2 class="step-title">4. Bootstrap Project Context with Antigravity</h2>
+      <p>Now, let&#39;s simulate things with a condition that &#34;kinda closer&#34; to our everyday job:</p>
+<ul class="devsite-list">
+  <li>Not well managed repository</li>
+  <li>README obsolete</li>
+  <li>Documentations not frequently updated</li>
+</ul>
+<aside class="special">
+  <div class="aside-header"><span class="material-icons">info</span><strong>Note:</strong></div>
+  <p><strong>Note:</strong> Consider yourself very lucky if this is not reflecting your condition</p>
+</aside>
+<p>The first thing we want to do in this kind of situation is usually creating a map or context about the project that we want Antigravity to work on. This step shows one example of an approach on how to give Antigravity deep understanding of an existing codebase by creating a skill that analyzes the repository and generates a project context document.</p>
+<p>It also sets up the project constitution — the non-negotiable principles that the SDD workflows validate against. Together, these give Antigravity the context and constraints it needs for the SDD cycles later on</p>
+<h3>The Antigravity context hierarchy</h3>
+<p>Antigravity uses three levels of context, each with a different scope:</p>
+<ul class="devsite-list">
+  <li><strong>Rules</strong> (<code translate="no" dir="ltr">.agents/rules/</code>): Always-active instructions. Every conversation in this workspace sees them ( if you activated it ). Use rules for project-wide context like architecture decisions, coding standards, or technology stack information.</li>
+  <li><strong>Skills</strong> (<code translate="no" dir="ltr">.agents/skills/</code>): On-demand knowledge. Antigravity loads a skill only when the current task matches the skill's <code translate="no" dir="ltr">description</code> field. Use skills for domain-specific reference material.</li>
+  <li><strong>Workflows</strong> (<code translate="no" dir="ltr">.agents/workflows/</code>): Saved prompts triggered with <code translate="no" dir="ltr">/</code> commands. Use workflows for repeatable multi-step processes like the SDD pipeline.</li>
+</ul>
+<aside class="special">
+  <div class="aside-header"><span class="material-icons">info</span><strong>Note:</strong></div>
+  <p><strong>Note:</strong> The project currently has workflows (SDD pipeline) and 2 skills (<strong>repo-research</strong> and <strong>mcp-toolbox-postgres</strong> ) but no rules. Later, we will create a <code translate="no" dir="ltr">project-context.md</code> rule that gives Antigravity persistent understanding of the codebase — what technologies are in use, how files are organized, what has been built so far.</p>
+</aside>
+<h3>Activate the skills</h3>
+<p>The starter repo includes two pre-written skills in <code translate="no" dir="ltr">.agents/skills/</code>. They contain detailed instructions but start with <code translate="no" dir="ltr">TODO(codelab)</code> comments instead of the required YAML frontmatter. Without frontmatter, Antigravity cannot discover them.</p>
+<p>Antigravity skills require a YAML frontmatter block at the top of the file with two fields:</p>
+<ul class="devsite-list">
+  <li><strong><code translate="no" dir="ltr">name</code></strong> — a unique identifier for the skill</li>
+  <li><strong><code translate="no" dir="ltr">description</code></strong> — a natural language summary that Antigravity matches against when deciding which skill to load for a given request</li>
+</ul>
+<p><strong>Open .agents/skills/mcp-toolbox-postgres/SKILL.md in the editor</strong>. Replace the <code translate="no" dir="ltr">TODO(codelab)</code> comment lines at the top with this frontmatter:</p>
+<devsite-code>
+  <div class="code-header">
+    <span class="code-lang">yaml</span>
+    <button class="copy-button" onclick="copyCode(this)" aria-label="Copy code">
+      <span class="material-icons">content_copy</span>
+      <span class="copy-text">Copy</span>
+    </button>
+  </div>
+  <pre class="devsite-click-to-copy" syntax="yaml"><code class="language-yaml">---
+name: mcp-toolbox-postgres
+description: Configure MCP Toolbox for PostgreSQL — sources, tools, and embedding models
+---</code></pre>
+</devsite-code>
+<aside class="special">
+  <div class="aside-header"><span class="material-icons">info</span><strong>Note:</strong></div>
+  <p><strong>Notes:</strong> The MCP Toolbox Postgres skill contains the proper configuration for <code translate="no" dir="ltr">sources</code>, <code translate="no" dir="ltr">tools</code> and <code translate="no" dir="ltr">embedding models</code></p>
+</aside>
+<p><strong>Open .agents/skills/repo-research/SKILL.md in the editor</strong>. Replace the <code translate="no" dir="ltr">TODO(codelab)</code> comment lines at the top with this frontmatter:</p>
+<devsite-code>
+  <div class="code-header">
+    <span class="code-lang">yaml</span>
+    <button class="copy-button" onclick="copyCode(this)" aria-label="Copy code">
+      <span class="material-icons">content_copy</span>
+      <span class="copy-text">Copy</span>
+    </button>
+  </div>
+  <pre class="devsite-click-to-copy" syntax="yaml"><code class="language-yaml">---
+name: repo-research
+description: Analyze a repository&#x27;s structure, technologies, and patterns to create or update a project context document. Use when asked to research, analyze, or understand a codebase.
+---</code></pre>
+</devsite-code>
+<aside class="special">
+  <div class="aside-header"><span class="material-icons">info</span><strong>Note:</strong></div>
+  <p><strong>Notes:</strong> Read the <code translate="no" dir="ltr">repo-research</code> SKILL.md in detail. This is one example prompt to analyze your repository, note that the incremental update rules are intentionally conservative. If Antigravity's context runs out mid-research or the conversation is interrupted, everything discovered so far is already saved to the file. Re-invoking the skill picks up where it left off without losing progress.</p>
+</aside>
+<aside class="warning">
+  <div class="aside-header"><span class="material-icons">warning</span><strong>Warning:</strong></div>
+  <p><strong>Warning!</strong> Analyzing a big repository can exhaust your quota quickly!</p>
+</aside>
+<p>Verify both skills have valid frontmatter:</p>
+<devsite-code>
+  <div class="code-header">
+    <span class="code-lang">bash</span>
+    <button class="copy-button" onclick="copyCode(this)" aria-label="Copy code">
+      <span class="material-icons">content_copy</span>
+      <span class="copy-text">Copy</span>
+    </button>
+  </div>
+  <pre class="devsite-click-to-copy" syntax="bash"><code class="language-bash">head -4 .agents/skills/mcp-toolbox-postgres/SKILL.md
+head -4 .agents/skills/repo-research/SKILL.md</code></pre>
+</devsite-code>
+<p>Each should show <code translate="no" dir="ltr">---</code> delimiters wrapping <code translate="no" dir="ltr">name:</code> and <code translate="no" dir="ltr">description:</code> fields. If the delimiters or fields are missing, Antigravity will not recognize the skill.</p>
+<p>Both skills are loaded on-demand — Antigravity matches your request against the <code translate="no" dir="ltr">description</code> field and pulls in the full instructions only when relevant.</p>
+<h3>Configure ADK Docs MCP</h3>
+<p>In order to ensure our coding agent has correct knowledge of how to develop our ADK agent, it will need proper access to ADK documentation. We can enable this by setting up the  <a href="https://adk.dev/tutorials/coding-with-ai/#adk-docs-mcp-server" target="_blank" rel="noopener">ADK docs MCP server</a> .</p>
+<p>First, from the Antigravity editor, find the &#34;ellipsis&#34; icon on the top-right agent window and click it, you will see configuration options for the MCP and customization like this. Click the MCP one.</p>
+<div class="image-container"><img src="images/13b381d7e5ba6b9d.png" alt="13b381d7e5ba6b9d.png" class="devsite-screenshot" loading="lazy"></div>
+<p>Next, click the <code translate="no" dir="ltr">Manage MCP servers</code> button</p>
+<div class="image-container"><img src="images/2ccf0208d807d6b1.png" alt="2ccf0208d807d6b1.png" class="devsite-screenshot" loading="lazy"></div>
+<p>It will open the MCP servers configurations tab, then click the <code translate="no" dir="ltr">View Raw Config</code> button</p>
+<div class="image-container"><img src="images/2fcc41175db73fdf.png" alt="2fcc41175db73fdf.png" class="devsite-screenshot" loading="lazy"></div>
+<p>It will open the <code translate="no" dir="ltr">mcp_config.json</code> file. Now copy paste this configuration to the file</p>
+<devsite-code>
+  <div class="code-header">
+    <span class="code-lang">json</span>
+    <button class="copy-button" onclick="copyCode(this)" aria-label="Copy code">
+      <span class="material-icons">content_copy</span>
+      <span class="copy-text">Copy</span>
+    </button>
+  </div>
+  <pre class="devsite-click-to-copy" syntax="json"><code class="language-json">{
+    &quot;mcpServers&quot;: {
+        &quot;adk-docs-mcp&quot;: {
+            &quot;command&quot;: &quot;uvx&quot;,
+            &quot;args&quot;: [
+                &quot;--from&quot;,
+                &quot;mcpdoc&quot;,
+                &quot;mcpdoc&quot;,
+                &quot;--urls&quot;,
+                &quot;AgentDevelopmentKit:https://adk.dev/llms.txt&quot;,
+                &quot;--transport&quot;,
+                &quot;stdio&quot;
+            ]
+        }
+    }
+}</code></pre>
+</devsite-code>
+<aside class="special">
+  <div class="aside-header"><span class="material-icons">info</span><strong>Note:</strong></div>
+  <p><strong>Note:</strong> Don't forget to save the changes!</p>
+</aside>
+<p>This setup will enable the coding agent to search and read ADK documentation using an MCP server</p>
+<h3>Install Publicly Available Skills</h3>
+<p>We previously inspected skills that we created on our own ( the <code translate="no" dir="ltr">repo-research</code> and <code translate="no" dir="ltr">mcp-toolbox-postgres</code> skills). However there are many other skills that are useful to support our software development and can be easily installed to our coding agent.</p>
+<h4>Caveman Skills</h4>
+<p>One of the useful skills to reduce token usage is this  <a href="https://github.com/juliusbrussee/caveman" target="_blank" rel="noopener">caveman skill</a> . This skill can cut the output token from the agent,make it a good combination when you utilize a full Spec-driven development like this tutorial</p>
+<devsite-code>
+  <div class="code-header">
+    <span class="code-lang">bash</span>
+    <button class="copy-button" onclick="copyCode(this)" aria-label="Copy code">
+      <span class="material-icons">content_copy</span>
+      <span class="copy-text">Copy</span>
+    </button>
+  </div>
+  <pre class="devsite-click-to-copy" syntax="bash"><code class="language-bash">npx skills add JuliusBrussee/caveman</code></pre>
+</devsite-code>
+<p>Similar like before, let&#39;s select the <code translate="no" dir="ltr">caveman</code> skill here for now</p>
+<div class="image-container"><img src="images/7a5d9fdfb287837e.png" alt="7a5d9fdfb287837e.png" class="devsite-screenshot" loading="lazy"></div>
+<p>Then, just click <strong>Enter</strong> to other option to enable default installation and installing the skill in your current project</p>
+<p>Now, we should already have 4 skills configured and ready to start our SDD journey</p>
+<devsite-code>
+  <div class="code-header">
+    <span class="code-lang">text</span>
+    <button class="copy-button" onclick="copyCode(this)" aria-label="Copy code">
+      <span class="material-icons">content_copy</span>
+      <span class="copy-text">Copy</span>
+    </button>
+  </div>
+  <pre class="devsite-click-to-copy" syntax="text"><code class="language-text">.agents/skills/
+├── caveman
+├── mcp-toolbox-postgres
+└── repo-research</code></pre>
+</devsite-code>
+<h3>Generate the project context</h3>
+<p>Ensure the rules directory exists:</p>
+<devsite-code>
+  <div class="code-header">
+    <span class="code-lang">bash</span>
+    <button class="copy-button" onclick="copyCode(this)" aria-label="Copy code">
+      <span class="material-icons">content_copy</span>
+      <span class="copy-text">Copy</span>
+    </button>
+  </div>
+  <pre class="devsite-click-to-copy" syntax="bash"><code class="language-bash">mkdir -p .agents/rules</code></pre>
+</devsite-code>
+<p>In Antigravity&#39;s Agent Manager/Chat box (in editor mode press <code translate="no" dir="ltr">ctrl + L</code>), start a new conversation. Type:</p>
+<devsite-code>
+  <div class="code-header">
+    <span class="code-lang">text</span>
+    <button class="copy-button" onclick="copyCode(this)" aria-label="Copy code">
+      <span class="material-icons">content_copy</span>
+      <span class="copy-text">Copy</span>
+    </button>
+  </div>
+  <pre class="devsite-click-to-copy" syntax="text"><code class="language-text">Research this repository and create a project context document, and communicate efficiently</code></pre>
+</devsite-code>
+<p>Antigravity matches your request to the <code translate="no" dir="ltr">repo-research</code> and <code translate="no" dir="ltr">caveman</code> skill ( command to communicate efficiently ), and begins systematically analyzing the codebase. It reads configuration files, source code, and documentation, then populates the project context template with its findings.</p>
+<p>Once complete, open <code translate="no" dir="ltr">.agents/rules/project-context.md</code> in the editor. It contains concrete information about the project: technology stack (Python 3.12, ADK, MCP Toolbox, Cloud SQL), project structure, data model (menu_items table with <code translate="no" dir="ltr">pgvector</code>), and external integrations.</p>
+<aside class="special">
+  <div class="aside-header"><span class="material-icons">info</span><strong>Note:</strong></div>
+  <p><strong>Tip:</strong> The project context document grows as the project evolves. You can re-run the skill to update the context with the new additions. The incremental update rules ensure existing content is preserved — new technologies, entities, and integrations are appended, not overwritten.
+For targeted updates, use specific prompts: "Research the database schema and update the project context" or "Update the project context with the new tool definitions." Each invocation adds to the existing document.</p>
+</aside>
+<div class="image-container"><img src="images/9949388b3e1f401a.png" alt="9949388b3e1f401a.png" class="devsite-screenshot" loading="lazy"></div>
+<h3>Set the project constitution</h3>
+<p>The SDD workflows reference a project constitution at <code translate="no" dir="ltr">.specify/memory/constitution.md</code> during planning and analysis. The <code translate="no" dir="ltr">/speckit.plan</code> workflow runs a &#34;Constitution Check&#34; against it, and <code translate="no" dir="ltr">/speckit.analyze</code> flags violations as CRITICAL. If the constitution is left as a blank template with placeholder tokens, these checks have nothing to validate against — plans and analyses run without guardrails.</p>
+<p>The constitution defines non-negotiable project principles. This is a small repo maintained by a single developer, so the constitution should reflect that scope — keep things simple, consistent, and avoid over-engineering.</p>
+<p>In Antigravity&#39;s Agent Manager, start a new conversation. Run the constitution workflow:</p>
+<devsite-code>
+  <div class="code-header">
+    <span class="code-lang">text</span>
+    <button class="copy-button" onclick="copyCode(this)" aria-label="Copy code">
+      <span class="material-icons">content_copy</span>
+      <span class="copy-text">Copy</span>
+    </button>
+  </div>
+  <pre class="devsite-click-to-copy" syntax="text"><code class="language-text">/speckit.constitution This is a small restaurant concierge ADK agent maintained by one developer. Set 3 principles: (1) All database operations go through MCP Toolbox tool definitions in tools.yaml — no raw SQL in Python code, no ORM. (2) Session state uses ADK ToolContext — no custom state management, no external state stores. (3) Keep it simple — follow existing file and naming conventions exactly.</code></pre>
+</devsite-code>
+<p>Antigravity fills the constitution template with concrete principles, assigns a version (1.0.0), and runs a consistency check across the SDD templates.</p>
+<p>Review the generated constitution at <code translate="no" dir="ltr">.specify/memory/constitution.md</code>. Verify the three principles are present and clearly stated.</p>
+<div class="image-container"><img src="images/276113749cd30834.png" alt="276113749cd30834.png" class="devsite-screenshot" loading="lazy"></div>
+<aside class="special">
+  <div class="aside-header"><span class="material-icons">info</span><strong>Note:</strong></div>
+  <p><strong>Note:</strong> The constitution is deliberately kept to 3 principles scoped for a solo developer. The <code translate="no" dir="ltr">/speckit.constitution</code> workflow supports incremental amendments — run it again with additional principles and it handles versioning automatically. For a team project, you would add principles for code review, testing discipline, observability, and API versioning.</p>
+</aside>
+<aside class="special">
+  <div class="aside-header"><span class="material-icons">info</span><strong>Note:</strong></div>
+  <p><strong>Checkpoint: </strong><code translate="no" dir="ltr">.agents/rules/project-context.md</code> exists with concrete information about the repository. <code translate="no" dir="ltr">.agents/skills/repo-research/SKILL.md</code> demonstrates skill creation with YAML frontmatter, instructions, and conflict resolution. <code translate="no" dir="ltr">.specify/memory/constitution.md</code> contains three project principles that the plan and analyze workflows validate against. You understand the three-level context hierarchy: rules (always-active), skills (on-demand), workflows (slash commands).</p>
+</aside>
+<hr>
+    </div>
+
+    <div class="codelab-step" id="step-4" data-step="4">
+      <h2 class="step-title">5. SDD Cycle — Add Reservation Feature</h2>
+      <p>This step walks through a complete SDD cycle to add reservation booking to the restaurant concierge agent. You drive Antigravity through each phase — specify, clarify, plan, tasks, analyze, implement — observing how each artifact builds on the previous one. This is the core learning experience of the codelab.</p>
+<aside class="warning">
+  <div class="aside-header"><span class="material-icons">warning</span><strong>Warning:</strong></div>
+  <p><strong>Important!</strong> Antigravity is an AI assistant — its generated artifacts (specs, plans, tasks, code) may differ from what this tutorial describes. The file names, exact SQL schemas, and code structure may vary. This is expected and part of working with AI-assisted development. The SDD workflow ensures you review every artifact before it becomes code, so use your judgment to accept, modify, or regenerate any output that does not match your expectations.</p>
+</aside>
+<h3>Specify the feature</h3>
+<p>In Antigravity&#39;s Agent Manager, start a new conversation. Type the <code translate="no" dir="ltr">/speckit.specify</code> workflow command with a feature description:</p>
+<devsite-code>
+  <div class="code-header">
+    <span class="code-lang">text</span>
+    <button class="copy-button" onclick="copyCode(this)" aria-label="Copy code">
+      <span class="material-icons">content_copy</span>
+      <span class="copy-text">Copy</span>
+    </button>
+  </div>
+  <pre class="devsite-click-to-copy" syntax="text"><code class="language-text">/speckit.specify Add reservation booking capability to the restaurant concierge agent. Guests should be able to make a table reservation by providing their name, party size, date, and time. They should also be able to check existing reservations. The agent should confirm reservation details before booking and handle special requests (e.g., &quot;window seat&quot;, &quot;birthday celebration&quot;).</code></pre>
+</devsite-code>
+<p>Antigravity creates a feature branch, generates a specification document, and runs quality validation. If Antigravity presents clarification questions, answer them based on the feature description above.</p>
+<aside class="special">
+  <div class="aside-header"><span class="material-icons">info</span><strong>Note:</strong></div>
+  <p><strong>Note:</strong> After completing the specification, Antigravity may present handoffs such as <strong>"Build Technical Plan"</strong> or <strong>"Clarify Spec Requirements"</strong>. These are cue to the next workflow phase (<code translate="no" dir="ltr">/speckit.plan</code> or <code translate="no" dir="ltr">/speckit.clarify</code>)</p>
+</aside>
+<p>The specification focuses on WHAT and WHY — not HOW. It describes the user experience (&#34;Guests can book a reservation by providing their name, party size, date, and time&#34;) without mentioning SQL tables, <code translate="no" dir="ltr">tools.yaml</code>, or ADK APIs. Implementation details come in the planning phase.</p>
+<p>Review the generated specification at <code translate="no" dir="ltr">specs/&lt;branch-name&gt;/spec.md</code>. Verify it captures the functional requirements and success criteria.</p>
+<div class="image-container"><img src="images/4ea3f72f9dfb4d35.png" alt="4ea3f72f9dfb4d35.png" class="devsite-screenshot" loading="lazy"></div>
+<h3>Clarify the specification (optional)</h3>
+<p>Run the clarify workflow to identify and resolve underspecified areas in the spec:</p>
+<devsite-code>
+  <div class="code-header">
+    <span class="code-lang">text</span>
+    <button class="copy-button" onclick="copyCode(this)" aria-label="Copy code">
+      <span class="material-icons">content_copy</span>
+      <span class="copy-text">Copy</span>
+    </button>
+  </div>
+  <pre class="devsite-click-to-copy" syntax="text"><code class="language-text">/speckit.clarify</code></pre>
+</devsite-code>
+<p>Antigravity scans the spec for ambiguities, missing acceptance criteria, and underspecified requirements. It asks targeted clarification questions — each answerable with a short selection or phrase. Your answers are encoded directly back into the spec, making it more precise before planning begins.</p>
+<aside class="special">
+  <div class="aside-header"><span class="material-icons">info</span><strong>Note:</strong></div>
+  <p><strong>Tip:</strong> The clarify step is optional but recommended for complex features. For straightforward specs, skip directly to planning.</p>
+</aside>
+<h3>Plan the implementation</h3>
+<p>Run the planning workflow:</p>
+<devsite-code>
+  <div class="code-header">
+    <span class="code-lang">text</span>
+    <button class="copy-button" onclick="copyCode(this)" aria-label="Copy code">
+      <span class="material-icons">content_copy</span>
+      <span class="copy-text">Copy</span>
+    </button>
+  </div>
+  <pre class="devsite-click-to-copy" syntax="text"><code class="language-text">/speckit.plan Update the restaurant concierge agent to multi agent architecture which separate responsibilities for handling menu and reservations. Utilize your access to ADK Docs tools and MCP toolbox skill to implement it properly</code></pre>
+</devsite-code>
+<p>Antigravity generates a technical plan through two phases:</p>
+<ol class="devsite-list">
+  <li><strong>Research phase</strong> — resolves unknowns about the existing codebase, generates <code translate="no" dir="ltr">research.md</code></li>
+  <li><strong>Design phase</strong> — creates <code translate="no" dir="ltr">data-model.md</code> (reservations entity definition) and updates <code translate="no" dir="ltr">project-context.md</code></li>
+</ol>
+<p>Antigravity should use the ADK Docs MCP tools and MCP toolbox docs skill during planning. Review the key artifacts:</p>
+<ul class="devsite-list">
+  <li><code translate="no" dir="ltr">specs/&lt;branch-name&gt;/plan.md</code> — the technical approach: which files to modify, what patterns to follow</li>
+  <li><code translate="no" dir="ltr">specs/&lt;branch-name&gt;/data-model.md</code> — the reservations entity definition (columns, types, relationships)</li>
+  <li><code translate="no" dir="ltr">specs/&lt;branch-name&gt;/research.md</code> — decisions made and rationale</li>
+</ul>
+<div class="image-container"><img src="images/d9996ccbb3211078.png" alt="d9996ccbb3211078.png" class="devsite-screenshot" loading="lazy"></div>
+<h3>Generate tasks</h3>
+<p>Run the tasks workflow</p>
+<devsite-code>
+  <div class="code-header">
+    <span class="code-lang">text</span>
+    <button class="copy-button" onclick="copyCode(this)" aria-label="Copy code">
+      <span class="material-icons">content_copy</span>
+      <span class="copy-text">Copy</span>
+    </button>
+  </div>
+  <pre class="devsite-click-to-copy" syntax="text"><code class="language-text">/speckit.tasks</code></pre>
+</devsite-code>
+<p>Antigravity breaks the plan into an ordered task list in <code translate="no" dir="ltr">specs/&lt;branch-name&gt;/tasks.md</code>. Tasks follow a strict checklist format with IDs, priority markers, and file paths, for example:</p>
+<devsite-code>
+  <div class="code-header">
+    <span class="code-lang">text</span>
+    <button class="copy-button" onclick="copyCode(this)" aria-label="Copy code">
+      <span class="material-icons">content_copy</span>
+      <span class="copy-text">Copy</span>
+    </button>
+  </div>
+  <pre class="devsite-click-to-copy" syntax="text"><code class="language-text">- [ ] [T001] [P] Create reservations table schema in scripts/seed_db.py
+- [ ] [T002] [P] Add create_reservation tool to tools.yaml
+- [ ] [T003] [P] Add list_reservations tool to tools.yaml
+- [ ] [T004] [P] Update agent instruction in restaurant_concierge/agent.py</code></pre>
+</devsite-code>
+<p>Tasks are organized into phases: Setup → Foundational → User Stories → Polish. Scan the task list to understand what will be created and modified.</p>
+<div class="image-container"><img src="images/9fcdb822d8279ddf.png" alt="9fcdb822d8279ddf.png" class="devsite-screenshot" loading="lazy"></div>
+<h3>Analyze tasks (optional)</h3>
+<p>Run the analyze workflow to review the tasks for risks and gaps:</p>
+<devsite-code>
+  <div class="code-header">
+    <span class="code-lang">text</span>
+    <button class="copy-button" onclick="copyCode(this)" aria-label="Copy code">
+      <span class="material-icons">content_copy</span>
+      <span class="copy-text">Copy</span>
+    </button>
+  </div>
+  <pre class="devsite-click-to-copy" syntax="text"><code class="language-text">/speckit.analyze</code></pre>
+</devsite-code>
+<p>Antigravity checks the task list against the spec and plan, looking for missing edge cases, tasks that may conflict, or gaps between the spec&#39;s requirements and the planned work. Address critical issues before implementing.</p>
+<aside class="special">
+  <div class="aside-header"><span class="material-icons">info</span><strong>Note:</strong></div>
+  <p><strong>Tip:</strong> The analyze step is most useful when the task list is long or the feature touches multiple subsystems. For a focused feature like reservation booking, a quick scan is sufficient.</p>
+</aside>
+<hr>
+    </div>
+
+    <div class="codelab-step" id="step-5" data-step="5">
+      <h2 class="step-title">6. Implement</h2>
+      <p>Run the implementation workflow:</p>
+<devsite-code>
+  <div class="code-header">
+    <span class="code-lang">text</span>
+    <button class="copy-button" onclick="copyCode(this)" aria-label="Copy code">
+      <span class="material-icons">content_copy</span>
+      <span class="copy-text">Copy</span>
+    </button>
+  </div>
+  <pre class="devsite-click-to-copy" syntax="text"><code class="language-text">/speckit.implement</code></pre>
+</devsite-code>
+<p>Antigravity presents a final implementation plan and task artifact. Review and approve it to proceed</p>
+<aside class="special">
+  <div class="aside-header"><span class="material-icons">info</span><strong>Note:</strong></div>
+  <p><strong>Tip:</strong> You can comment on it directly! This can only be done with Antigravity built-in Artifact</p>
+</aside>
+<div class="image-container"><img src="images/adc1e3d098bd1638.png" alt="adc1e3d098bd1638.png" class="devsite-screenshot" loading="lazy"></div>
+<div class="image-container"><img src="images/306448e70f61ab51.png" alt="306448e70f61ab51.png" class="devsite-screenshot" loading="lazy"></div>
+<p>Antigravity executes the tasks, checking each one off as it completes. When it finished, it will present the complete Walkthrough</p>
+<div class="image-container"><img src="images/48cc7752817a54c7.png" alt="48cc7752817a54c7.png" class="devsite-screenshot" loading="lazy"></div>
+<h3>Test the code changes</h3>
+<p>After implementation completes, verify the key changes were made. The exact file names and content may vary, but these patterns should be present like in <code translate="no" dir="ltr">tools.yaml</code> and <code translate="no" dir="ltr">agent.py</code>:</p>
+<devsite-code>
+  <div class="code-header">
+    <span class="code-lang">bash</span>
+    <button class="copy-button" onclick="copyCode(this)" aria-label="Copy code">
+      <span class="material-icons">content_copy</span>
+      <span class="copy-text">Copy</span>
+    </button>
+  </div>
+  <pre class="devsite-click-to-copy" syntax="bash"><code class="language-bash"># Verify reservation tools were added to tools.yaml
+grep -i &quot;reservation&quot; tools.yaml</code></pre>
+</devsite-code>
+<p>You will see some output like this</p>
+<devsite-code>
+  <div class="code-header">
+    <span class="code-lang">text</span>
+    <button class="copy-button" onclick="copyCode(this)" aria-label="Copy code">
+      <span class="material-icons">content_copy</span>
+      <span class="copy-text">Copy</span>
+    </button>
+  </div>
+  <pre class="devsite-click-to-copy" syntax="text"><code class="language-text">...
+get_reservations_by_name:
+      Retrieve all reservations for a guest by their name. Uses case-insensitive
+      SELECT id, guest_name, party_size, reservation_datetime, special_requests, created_at
+      FROM reservations
+      ORDER BY reservation_datetime DESC
+...</code></pre>
+</devsite-code>
+<p>And for <code translate="no" dir="ltr">agent.py</code></p>
+<devsite-code>
+  <div class="code-header">
+    <span class="code-lang">bash</span>
+    <button class="copy-button" onclick="copyCode(this)" aria-label="Copy code">
+      <span class="material-icons">content_copy</span>
+      <span class="copy-text">Copy</span>
+    </button>
+  </div>
+  <pre class="devsite-click-to-copy" syntax="bash"><code class="language-bash"># Verify agent instruction was updated
+grep -i &quot;reservation&quot; restaurant_concierge/agent.py
+
+# Check what files changed
+git diff --name-only</code></pre>
+</devsite-code>
+<p>Maybe you will find changes like this</p>
+<devsite-code>
+  <div class="code-header">
+    <span class="code-lang">text</span>
+    <button class="copy-button" onclick="copyCode(this)" aria-label="Copy code">
+      <span class="material-icons">content_copy</span>
+      <span class="copy-text">Copy</span>
+    </button>
+  </div>
+  <pre class="devsite-click-to-copy" syntax="text"><code class="language-text">...
+- **Table Reservations**: Help guests book a table or check their existing reservations.
+## Reservation Booking Rules
+When a guest wants to make a reservation, collect ALL of the following before confirming:
+**IMPORTANT**: Before calling `book_reservation`, you MUST:
+- Only call `book_reservation` after the guest says &quot;yes&quot; or &quot;confirm&quot;
+## Checking Reservations
+When a guest asks to check their reservations:
+- Use `get_reservations_by_name` to find their bookings
+        book_reservation,
+...</code></pre>
+</devsite-code>
+<aside class="special">
+  <div class="aside-header"><span class="material-icons">info</span><strong>Note:</strong></div>
+  <p><strong>Note:</strong> If <code translate="no" dir="ltr">grep</code> returns no matches for either file, the implementation may have used different naming. Check <code translate="no" dir="ltr">git diff</code> to see the full set of changes and verify reservation-related logic was added.</p>
+</aside>
+<p>The changes should be affecting the seed database script. The updated script should create the <code translate="no" dir="ltr">reservations</code> table if it does not already exist. You should see output confirming the new table was created (the existing <code translate="no" dir="ltr">menu_items</code> data is preserved).</p>
+<aside class="special">
+  <div class="aside-header"><span class="material-icons">info</span><strong>Note:</strong></div>
+  <p><strong>Note:</strong> Antigravity may have created a separate migration script (e.g., <code translate="no" dir="ltr">scripts/create&lt;em&gt;reservations.py</code>) instead of updating <code translate="no" dir="ltr">seed&lt;/em&gt;db.py</code>. Check <code translate="no" dir="ltr">git diff --name-only</code> for any new scripts in <code translate="no" dir="ltr">scripts/</code> and run those instead.</p>
+</aside>
+<p>If everything goes well up to this point, we can test the feature on the ADK agent Dev UI. Let&#39;s do the database migration to incorporate new table and restart the Toolbox to pick up the new tool definitions in <code translate="no" dir="ltr">tools.yaml</code>. Stop any existing Toolbox process, then start a fresh one:</p>
+<devsite-code>
+  <div class="code-header">
+    <span class="code-lang">bash</span>
+    <button class="copy-button" onclick="copyCode(this)" aria-label="Copy code">
+      <span class="material-icons">content_copy</span>
+      <span class="copy-text">Copy</span>
+    </button>
+  </div>
+  <pre class="devsite-click-to-copy" syntax="bash"><code class="language-bash">lsof -ti:5000 | xargs kill -9 2&gt;/dev/null; echo &quot;Done&quot;
+./scripts/setup_database.sh &gt; database_setup.log 2&gt;&amp;1 &amp;</code></pre>
+</devsite-code>
+<p>You can check the output log in the <code translate="no" dir="ltr">database_setup.log</code> whether Antigravity generates correct code and configuration or not. If you encounter error try interacting with the agent to fix it</p>
+<p>If all goes well, then we can start the ADK dev UI:</p>
+<devsite-code>
+  <div class="code-header">
+    <span class="code-lang">bash</span>
+    <button class="copy-button" onclick="copyCode(this)" aria-label="Copy code">
+      <span class="material-icons">content_copy</span>
+      <span class="copy-text">Copy</span>
+    </button>
+  </div>
+  <pre class="devsite-click-to-copy" syntax="bash"><code class="language-bash">uv run adk web .</code></pre>
+</devsite-code>
+<p>Open <code translate="no" dir="ltr">http://localhost:8000</code> in your browser and test with these prompts:</p>
+<devsite-code>
+  <div class="code-header">
+    <span class="code-lang">text</span>
+    <button class="copy-button" onclick="copyCode(this)" aria-label="Copy code">
+      <span class="material-icons">content_copy</span>
+      <span class="copy-text">Copy</span>
+    </button>
+  </div>
+  <pre class="devsite-click-to-copy" syntax="text"><code class="language-text">I&#x27;d like to book a table for 4 people on Friday at 7pm under the name Timmy</code></pre>
+</devsite-code>
+<aside class="special">
+  <div class="aside-header"><span class="material-icons">info</span><strong>Note:</strong></div>
+  <p><strong>Inspect:</strong> the agent should confirm the reservation details and create it</p>
+</aside>
+<devsite-code>
+  <div class="code-header">
+    <span class="code-lang">text</span>
+    <button class="copy-button" onclick="copyCode(this)" aria-label="Copy code">
+      <span class="material-icons">content_copy</span>
+      <span class="copy-text">Copy</span>
+    </button>
+  </div>
+  <pre class="devsite-click-to-copy" syntax="text"><code class="language-text">Do I have any upcoming reservations?</code></pre>
+</devsite-code>
+<aside class="special">
+  <div class="aside-header"><span class="material-icons">info</span><strong>Note:</strong></div>
+  <p><strong>Inspect:</strong> the agent should list the reservation you just made</p>
+</aside>
+<div class="image-container"><img src="images/d9815389df37ed1a.png" alt="d9815389df37ed1a.png" class="devsite-screenshot" loading="lazy"></div>
+<div class="image-container"><img src="images/f38a944851e28c29.png" alt="f38a944851e28c29.png" class="devsite-screenshot" loading="lazy"></div>
+<p>Now, stop the ADK dev UI with <code translate="no" dir="ltr">Ctrl+C</code> twice.</p>
+<aside class="special">
+  <div class="aside-header"><span class="material-icons">info</span><strong>Note:</strong></div>
+  <p><strong>Checkpoint:</strong> The agent handles reservation booking and lookup. You have completed a full SDD cycle: specify → clarify → plan → tasks → analyze → implement → test. Each phase produced a versioned artifact in <code translate="no" dir="ltr">specs/&lt;branch-name&gt;/</code>.</p>
+</aside>
+<hr>
+    </div>
+
+    <div class="codelab-step" id="step-6" data-step="6">
+      <h2 class="step-title">7. Challenges (Optional)</h2>
+      <p>You now know the full SDD workflow. Put it to the test:</p>
+<ul class="devsite-list">
+  <li>Run a second SDD cycle to build a web chat interface for the restaurant concierge — this time without step-by-step guidance.</li>
+  <li>Deploy your agent to Cloud Run for production scenario</li>
+</ul>
+<h3>Hints</h3>
+<ul class="devsite-list">
+  <li>The project has no frontend framework. Antigravity should propose vanilla HTML/CSS/JS — if it suggests React or similar, nudge it toward simplicity (your constitution's "keep it simple" principle should catch this).</li>
+  <li>The ADK server exposes <code translate="no" dir="ltr">/run&lt;em&gt;sse</code> for streaming and <code translate="no" dir="ltr">/apps/{app&lt;/em&gt;name}/users/{user_id}/sessions</code> for session management. Antigravity discovers these from the project context.</li>
+  <li>After implementation, start the server with <code translate="no" dir="ltr">uv run uvicorn server:app --host 0.0.0.0 --port 8080</code> (not <code translate="no" dir="ltr">adk web</code>) so the static file mount works.</li>
+  <li>Test at  <a href="http://localhost:8080/static/index.html" target="_blank" rel="noopener"><code translate="no" dir="ltr">http://localhost:8080/static/index.html</code></a>.</li>
+  <li>The reference codelabs already show how to deploy and persist ADK agent, give Antigravity references to this!</li>
+</ul>
+<hr>
+    </div>
+
+    <div class="codelab-step" id="step-7" data-step="7">
+      <h2 class="step-title">8. Congratulations!</h2>
+      <p>You have extended a restaurant concierge ADK agent with reservation booking — entirely through Antigravity&#39;s SDD workflows, without writing application code by hand.</p>
+<h3>What you built</h3>
+<ul class="devsite-list">
+  <li>A restaurant concierge ADK agent with menu search, semantic search, dietary preference tracking, and reservation booking</li>
+  <li>An Antigravity skill for repo research that generates and maintains a project context document</li>
+  <li>A project constitution that enforces non-negotiable principles during planning and analysis</li>
+  <li>A complete SDD cycle demonstrating the specify → clarify → plan → tasks → analyze → implement workflow</li>
+</ul>
+<h3>What you learned</h3>
+<ul class="devsite-list">
+  <li>How to use Spec-Driven Development workflows in Antigravity to systematically add features to an existing codebase</li>
+  <li>How to create Antigravity skills and configure MCP that package domain knowledge for reuse across conversations</li>
+  <li>How to bootstrap project context so Antigravity makes informed decisions about architecture, patterns, and technology choices</li>
+  <li>How to set a project constitution that the SDD workflows validate against</li>
+  <li>How to extend an ADK agent with new database-backed tools via MCP Toolbox</li>
+</ul>
+<h3>Clean up</h3>
+<p>Stop any running local processes (Toolbox):</p>
+<devsite-code>
+  <div class="code-header">
+    <span class="code-lang">bash</span>
+    <button class="copy-button" onclick="copyCode(this)" aria-label="Copy code">
+      <span class="material-icons">content_copy</span>
+      <span class="copy-text">Copy</span>
+    </button>
+  </div>
+  <pre class="devsite-click-to-copy" syntax="bash"><code class="language-bash">lsof -ti:5000 | xargs kill -9 2&gt;/dev/null</code></pre>
+</devsite-code>
+<p>Delete the Cloud SQL instance to avoid ongoing charges:</p>
+<devsite-code>
+  <div class="code-header">
+    <span class="code-lang">bash</span>
+    <button class="copy-button" onclick="copyCode(this)" aria-label="Copy code">
+      <span class="material-icons">content_copy</span>
+      <span class="copy-text">Copy</span>
+    </button>
+  </div>
+  <pre class="devsite-click-to-copy" syntax="bash"><code class="language-bash">gcloud sql instances delete restaurant-db --quiet</code></pre>
+</devsite-code>
+<p>Optionally, delete the entire project:</p>
+<devsite-code>
+  <div class="code-header">
+    <span class="code-lang">bash</span>
+    <button class="copy-button" onclick="copyCode(this)" aria-label="Copy code">
+      <span class="material-icons">content_copy</span>
+      <span class="copy-text">Copy</span>
+    </button>
+  </div>
+  <pre class="devsite-click-to-copy" syntax="bash"><code class="language-bash">gcloud projects delete $GOOGLE_CLOUD_PROJECT</code></pre>
+</devsite-code>
+<aside class="warning">
+  <div class="aside-header"><span class="material-icons">warning</span><strong>Warning:</strong></div>
+  <p><strong>Important:</strong> You can undo this delete operation for a limited period of time by using this command <code translate="no" dir="ltr">gcloud projects undelete ${GOOGLE&lt;em&gt;CLOUD&lt;/em&gt;PROJECT}</code></p>
+</aside>
+    </div>
+    </main>
+
+    <!-- Bottom Action Navigation Bar -->
+    <footer class="devsite-actions">
+      <button class="btn-nav btn-back" id="btn-prev" disabled aria-label="Previous step">
+        <span class="material-icons">arrow_back</span>
+        <span class="btn-label">Back</span>
+      </button>
+      
+      <span class="step-indicator" id="step-indicator">Step 1 of 8</span>
+      
+      <button class="btn-nav btn-next" id="btn-next" aria-label="Next step">
+        <span class="btn-label">Next</span>
+        <span class="material-icons">arrow_forward</span>
+      </button>
+    </footer>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
